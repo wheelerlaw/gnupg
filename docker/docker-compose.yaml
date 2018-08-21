@@ -1,0 +1,38 @@
+version: '3.2'
+
+services:
+    proxy:
+        # image: minimum2scp/squid
+        build: ./proxy
+        networks: 
+            main:
+              ipv4_address: 192.168.44.4            
+            default:
+    gpg:
+        build: ./gpg
+        command: ip addr
+        networks:
+            # you may set custom IP addresses
+            main:
+                ipv4_address: 192.168.44.3
+            # - back
+    gateway:
+        build: ./gateway
+        networks:
+            main:
+                ipv4_address: 192.168.44.2
+
+networks:
+    main:
+        # use the bridge driver, but enable IPv6
+        driver: overlay
+        attachable: true
+        internal: true
+        ipam:
+            driver: default
+            config:
+                - subnet: 192.168.44.0/24
+                  # gateway: 192.168.44.1
+    # back:
+        # use a custom driver, with no options
+        # driver: custom-driver-1
